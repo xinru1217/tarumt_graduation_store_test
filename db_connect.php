@@ -1,27 +1,51 @@
 <?php
-// Enable error reporting for debugging purposes
+require 'vendor/autoload.php'; // AWS SDK
+
+use Aws\SecretsManager\SecretsManagerClient;
+use Aws\Exception\AwsException;
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Database credentials
-$host = 'tarumt-graduation-store-db.c1yuic0u4al1.us-east-1.rds.amazonaws.com';
-$port = 3306;
-$dbname = 'tgsdb';
-$username = 'admin';
-$password = 'tarumt#admin#1234';
+// Create the Secrets Manager client
+$client = new SecretsManagerClient([
+    'version' => 'latest',
+    'region' => 'us-east-1', // Change to your region
+]);
+
+$secretName = 'rds!db-8e1e1953-98a7-421b-8e77-20211dc2a200'; 
 
 try {
-    // Create a new mysqli connection
-    $conn = new mysqli($host, $username, $password, $dbname, $port);
-    
-    // Check if the connection was successful
-    if ($conn->connect_error) {
-        throw new Exception("Connection failed: " . $conn->connect_error);
+    // Fetch the secret
+    $result = $client->getSecretValue([
+        'SecretId' => $secretName,
+    ]);
+
+    // Decode the secret string (assumes JSON structure)
+    if (isset($result['SecretString'])) {
+        $secret = json_decode($result['SecretString'], true);
+
+        $host = $secret['host'];
+        $port = $secret['port'];
+        $dbname = $secret['dbname'];
+        $username = $secret['username'];
+        $password = $secret['password'];
+
+        // Connect to the database
+        $conn = new mysqli($host, $username, $password, $dbname, $port);
+
+        if ($conn->connect_error) {
+            throw new Exception("Connection failed: " . $conn->connect_error);
+        }
+
+    } else {
+        throw new Exception("SecretString not found in result.");
     }
 
-    
+} catch (AwsException $e) {
+    die("AWS Error: " . $e->getMessage());
 } catch (Exception $e) {
-    // Catch and display any exceptions
     die("Error: " . $e->getMessage());
 }
 ?>
+3
