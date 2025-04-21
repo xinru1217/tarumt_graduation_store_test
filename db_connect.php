@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // Database credentials
-$host = 'db.c7dokdeavdy1.us-east-1.rds.amazonaws.com';
+$host = 'tarumt-graduation-store-db.c1yuic0u4al1.us-east-1.rds.amazonaws.com';
 $port = 3306;
 $dbname = 'tgsdb';
 $username = 'admin';
