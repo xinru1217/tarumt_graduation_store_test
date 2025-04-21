@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 // Database credentials
 $host = 'db.c7dokdeavdy1.us-east-1.rds.amazonaws.com';
 $port = 3306;
-$dbname = 'phpdb';
+$dbname = 'tgsdb';
 $username = 'admin';
 $password = 'tarumt#admin#1234';
 
