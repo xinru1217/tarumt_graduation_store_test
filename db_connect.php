@@ -10,10 +10,10 @@ error_reporting(E_ALL);
 // Create the Secrets Manager client
 $client = new SecretsManagerClient([
     'version' => 'latest',
-    'region' => 'us-east-1', // Change to your region
+    'region' => 'us-east-1',
 ]);
 
-$secretName = 'rds!db-8e1e1953-98a7-421b-8e77-20211dc2a200'; 
+$secretName = 'graduation-store-db-secret';
 
 try {
     // Fetch the secret
@@ -38,6 +38,9 @@ try {
             throw new Exception("Connection failed: " . $conn->connect_error);
         }
 
+        // Optional success message
+        // echo "DB connection successful!";
+
     } else {
         throw new Exception("SecretString not found in result.");
     }
@@ -48,4 +51,3 @@ try {
     die("Error: " . $e->getMessage());
 }
 ?>
-3
